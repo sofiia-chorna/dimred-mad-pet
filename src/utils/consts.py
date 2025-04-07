@@ -9,4 +9,4 @@ DATASET_FOLDER = "data/v1.5"
 TYPE = "cleaned-pbc"
 OUTPUT_FOLDER = f"{DATASET_FOLDER}_{TYPE}_merged"
 
-LFF_OUTPUT_FOLDER = f"data/{DATASET_FOLDER}_cleaned-pbc_llfs"
+LFF_OUTPUT_FOLDER = f"{DATASET_FOLDER}_{TYPE}_llfs"
