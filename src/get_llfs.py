@@ -19,16 +19,19 @@ def run_get_llfs(model, dataset_path, output_folder, type):
 
     for split in SPLITS:
         print(f"Processing {split}...")
-        
-        subsets = os.listdir(dataset_path)
+            
+        subsets = [d for d in os.listdir(dataset_path) if os.path.isdir(os.path.join(dataset_path, d))]
         subsets.sort()
 
         for subset in subsets:
             subset_input_path = os.path.join(dataset_path, subset, type, f"{split}.xyz")
 
             llfs_tensor = get_llf(model, subset_input_path)
-            
+
             subset_output_path = os.path.join(output_folder, subset)
             os.makedirs(subset_output_path, exist_ok=True)
+            
+            save_path = os.path.join(subset_output_path, f"{split}.pt")    
+            torch.save(llfs_tensor, save_path)
 
-            torch.save(llfs_tensor, os.path.join(subset_output_path, f"{split}.pt"))
+            print(f"Saved to {save_path}")
