@@ -14,8 +14,9 @@ def main():
 @main.command()
 def get_llfs():
     model = NativePET.load_checkpoint("pet-mad-latest.ckpt").eval().to(DEVICE)
-    
+
     run_get_llfs(model, DATASET_FOLDER, LFF_OUTPUT_FOLDER, TYPE)
+
 
 if __name__ == "__main__":
     main()
