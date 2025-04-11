@@ -174,8 +174,6 @@ cython_debug/
 .pypirc
 
 metatrain/
-v1.5/
-v1.5_cleaned-pbc_llfs/
-v1.5_cleaned-pbc_merged/
 
 pet-mad-latest.ckpt
+data/
