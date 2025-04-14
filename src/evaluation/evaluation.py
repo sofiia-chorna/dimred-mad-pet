@@ -1,10 +1,7 @@
-import torch
 import numpy as np
-from sklearn.metrics import (
-    mean_absolute_error,
-    explained_variance_score,
-)
+import torch
 from scipy.spatial.distance import cosine
+from sklearn.metrics import explained_variance_score, mean_absolute_error
 
 
 def compute_metrics(actual, predicted):
