@@ -9,7 +9,7 @@ SUBSET_ORDER = [
     "2d",
     "ideal",
     "nanoclusters",
-    "randomp",
+    "randcomp",
     "rattled",
     "surfaces",
     "molecules",
