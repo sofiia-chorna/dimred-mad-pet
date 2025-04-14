@@ -6,7 +6,8 @@ import torch
 
 from metatrain.experimental.nativepet import NativePET
 from src.get_llfs import run_get_llfs
-from src.train.train import save_subset_models, train_model
+from src.train.predict import run_predict
+from src.train.train import load_subset_models, save_subset_models, train_model
 from src.utils.consts import (
     DATASET_FOLDER,
     DEVICE,
@@ -16,6 +17,7 @@ from src.utils.consts import (
     TYPE,
 )
 from src.utils.file import load_txt
+from src.utils.plot import plot_split_comparison
 
 # from src.dimred import run_pca
 
@@ -60,7 +62,14 @@ def train():
 
 @main.command()
 def predict():
-    pass
+    subset_models_loaded = load_subset_models(SUBSETS)
+
+    smap_test_actual = load_txt(PROJECTION_FOLDER, "test")
+
+    pred = run_predict(subset_models_loaded, "test")
+    actual = {k: v[:, :2] for k, v in smap_test_actual.items()}
+
+    plot_split_comparison(actual, pred, "mlp")
 
 
 if __name__ == "__main__":
