@@ -23,3 +23,5 @@ def get_subsets(path="data/v1.5_cleaned-pbc_llfs"):
 
 
 SUBSETS = get_subsets()
+
+PARAMS = {"lr": 0.001, "weight_decay": 1e-4, "epochs": 1000, "batch_size": 64}

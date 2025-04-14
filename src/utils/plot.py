@@ -52,8 +52,10 @@ def plot_split_comparison(actual_dict, pred_dict, title=""):
 
     eval_res = eval(pred_dict, actual_dict)
     metrics_str = ", ".join(f"{metric}: {val:.3f}" for metric, val in eval_res.items())
+    print(f"Eval result: {metrics_str}")
 
     plt.suptitle(f"{title}: {metrics_str}")
     plt.tight_layout()
 
+    title = title.replace(" ", "_")
     plt.savefig(os.path.join("plots", "smap", f"{title}.png"), dpi=300)
