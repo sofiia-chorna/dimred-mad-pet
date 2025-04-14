@@ -8,8 +8,8 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
 
-from src.train.predictor import MultiSubsetModel
-from src.utils.consts import DEVICE, SUBSETS, PARAMS
+from src.train.mlp import MLP
+from src.utils.consts import DEVICE, PARAMS, SUBSETS
 
 
 def run_train(train_features, smap_train_actual):
@@ -89,7 +89,7 @@ def run_train(train_features, smap_train_actual):
         val_datasets[subset_name] = TensorDataset(X_val_tensor, y_val_tensor)
 
     # init model
-    model = MultiSubsetModel(subset_dims=subset_dims)
+    model = MLP(subset_dims=subset_dims)
     model.to(DEVICE)
 
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
@@ -112,13 +112,13 @@ def run_train(train_features, smap_train_actual):
                 train_datasets[subset_name],
                 batch_size=batch_size,
                 shuffle=True,
-                drop_last=True,
             )
             for batch_X, batch_y in train_loader:
                 batch_X, batch_y = batch_X.to(DEVICE), batch_y.to(DEVICE)
                 optimizer.zero_grad()
                 outputs = model(batch_X, subset_name)
                 loss = criterion(outputs, batch_y)
+
                 loss.backward()
                 optimizer.step()
                 train_loss += loss.item() * batch_X.size(0)
@@ -141,6 +141,7 @@ def run_train(train_features, smap_train_actual):
                     batch_X, batch_y = batch_X.to(DEVICE), batch_y.to(DEVICE)
                     outputs = model(batch_X, subset_name)
                     loss = criterion(outputs, batch_y)
+
                     val_loss += loss.item() * batch_X.size(0)
                     total_val_samples += batch_X.size(0)
 
