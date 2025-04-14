@@ -8,6 +8,7 @@ from metatrain.experimental.nativepet import NativePET
 from src.get_llfs import run_get_llfs
 from src.train.predict import run_predict
 from src.train.train import load_subset_models, save_subset_models, train_model
+from src.train.run_train import run_train
 from src.utils.consts import (
     DATASET_FOLDER,
     DEVICE,
@@ -50,23 +51,14 @@ def train():
     # load projections
     smap_train_actual = load_txt(PROJECTION_FOLDER, "train")
 
-    subset_models = {}
-    for subset_name in SUBSETS:
-        X = torch.tensor(train_features[subset_name], dtype=torch.float32)
-        Y = torch.tensor(smap_train_actual[subset_name][:, :2], dtype=torch.float32)
-
-        subset_models[subset_name] = train_model(X, Y, input_dim=X.shape[1])
-
-    save_subset_models(subset_models)
+    run_train(train_features, smap_train_actual)
 
 
 @main.command()
 def predict():
-    subset_models_loaded = load_subset_models(SUBSETS)
-
     smap_test_actual = load_txt(PROJECTION_FOLDER, "test")
 
-    pred = run_predict(subset_models_loaded, "test")
+    pred = run_predict("test")
     actual = {k: v[:, :2] for k, v in smap_test_actual.items()}
 
     plot_split_comparison(actual, pred, "mlp")
