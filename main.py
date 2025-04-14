@@ -2,12 +2,10 @@ import os
 
 import click
 import numpy as np
-import torch
 
 from metatrain.experimental.nativepet import NativePET
 from src.get_llfs import run_get_llfs
 from src.train.predict import run_predict
-from src.train.train import load_subset_models, save_subset_models, train_model
 from src.train.run_train import run_train
 from src.utils.consts import (
     DATASET_FOLDER,
