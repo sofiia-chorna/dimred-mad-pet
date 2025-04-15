@@ -4,7 +4,7 @@ import numpy as np
 import torch
 
 from src.train.mlp import MLP
-from src.utils.consts import DEVICE, LFF_OUTPUT_FOLDER, SUBSETS
+from src.utils.consts import DEVICE, MAD_LFF_OUTPUT_FOLDER, SUBSETS
 
 
 def run_predict(split="test"):
@@ -13,7 +13,7 @@ def run_predict(split="test"):
 
     subset_dims = {}
     for subset in SUBSETS:
-        train_file = os.path.join(LFF_OUTPUT_FOLDER, subset, "train.dat")
+        train_file = os.path.join(MAD_LFF_OUTPUT_FOLDER, subset, "train.dat")
         subset_dims[subset] = np.loadtxt(train_file).shape[1]
 
     model = MLP(subset_dims=subset_dims)
@@ -32,7 +32,7 @@ def run_predict(split="test"):
         y_mean = data["y_mean"]
         y_std = data["y_std"]
 
-        x_path = os.path.join(LFF_OUTPUT_FOLDER, subset_name, f"{split}.pt")
+        x_path = os.path.join(MAD_LFF_OUTPUT_FOLDER, subset_name, f"{split}.pt")
         X = torch.load(x_path, map_location="cpu", weights_only=False).float().numpy()
 
         # standardize

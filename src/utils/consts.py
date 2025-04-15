@@ -7,13 +7,15 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 SPLITS = ["train", "val", "test"]
 BATCH_SIZE = 64
 
-DATASET_FOLDER = "data/v1.5"
+# mad dataset
+MAD_FOLDER = "data/v1.5"
 TYPE = "cleaned-pbc"
-OUTPUT_FOLDER = f"{DATASET_FOLDER}_{TYPE}_merged"
-
 PROJECTION_FOLDER = "data/atom_smap"
+MAD_LFF_OUTPUT_FOLDER = f"{MAD_FOLDER}_{TYPE}_llfs"
 
-LFF_OUTPUT_FOLDER = f"{DATASET_FOLDER}_{TYPE}_llfs"
+# mptraj
+MPTRAJ_FOLDER = "data/mptraj"
+MPTRAJ_LFF_OUTPUT_FOLDER = f"{MPTRAJ_FOLDER}_llfs"
 
 
 def get_subsets(path="data/v1.5_cleaned-pbc_llfs"):
