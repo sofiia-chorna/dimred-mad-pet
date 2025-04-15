@@ -4,19 +4,19 @@ import click
 import numpy as np
 
 from metatrain.experimental.nativepet import NativePET
-from src.get_llfs import run_get_llfs
+from src.get_llfs import get_mad_llfs, get_mptraj_llfs
 from src.train.predict import run_predict
 from src.train.run_train import run_train
 from src.utils.consts import (
-    DATASET_FOLDER,
     DEVICE,
-    LFF_OUTPUT_FOLDER,
+    MAD_LFF_OUTPUT_FOLDER,
+    MPTRAJ_LFF_OUTPUT_FOLDER,
     PROJECTION_FOLDER,
     SUBSETS,
-    TYPE,
 )
 from src.utils.file import load_txt
 from src.utils.plot import plot_split_comparison
+from src.utils.cli import dataset
 
 # from src.dimred import run_pca
 
@@ -27,10 +27,15 @@ def main():
 
 
 @main.command()
-def get_llfs():
+@dataset
+def get_llfs(dataset):
     model = NativePET.load_checkpoint("pet-mad-latest.ckpt").eval().to(DEVICE)
 
-    run_get_llfs(model, DATASET_FOLDER, LFF_OUTPUT_FOLDER, TYPE)
+    match dataset:
+        case "mad":
+            get_mad_llfs(model)
+        case "mptraj":
+            get_mptraj_llfs(model)
 
 
 # @main.command()
@@ -39,11 +44,18 @@ def get_llfs():
 
 
 @main.command()
-def train():
+@dataset
+def train(dataset):
+    match dataset:
+        case "mad":
+            llfs_folder = MAD_LFF_OUTPUT_FOLDER
+        case "mptraj":
+            llfs_folder = MPTRAJ_LFF_OUTPUT_FOLDER
+
     # load train llfs
     train_features = {}
     for subset_name in SUBSETS:
-        path = os.path.join(LFF_OUTPUT_FOLDER, subset_name, "train.dat")
+        path = os.path.join(llfs_folder, subset_name, "train.dat")
         train_features[subset_name] = np.loadtxt(path)
 
     # load projections
