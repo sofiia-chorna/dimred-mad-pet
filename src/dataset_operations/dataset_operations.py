@@ -1,18 +1,15 @@
-from ase.io import read, write
 import os
-import torch
 
+import torch
+from ase.io import read, write
+from metatensor.torch import Labels, TensorMap, mean_over_samples, std_over_samples
+from metatensor.torch.atomistic import ModelOutput
 from tqdm import tqdm
 
-
 import metatensor
-from metatensor.torch import TensorMap, Labels
-from metatensor.torch.atomistic import ModelOutput
-
 from metatrain.utils.data import read_systems
 from metatrain.utils.neighbor_lists import get_system_with_neighbor_lists
-
-from src.utils.consts import SPLITS, BATCH_SIZE, DEVICE
+from src.utils.consts import BATCH_SIZE, DEVICE, SPLITS
 
 
 def merge_subsets(dataset_folder, output_folder, dataset_type):
@@ -66,9 +63,19 @@ def get_llf(model, dataset_path):
     )
     tensormap = TensorMap(keys=keys, blocks=all_blocks)
 
-    mean_features = metatensor.torch.mean_over_samples(tensormap, sample_names=["atom"])
+    # mean features
+    mean_features = mean_over_samples(tensormap, sample_names=["atom"])
+    mean_tensor_values_list = [block.values for block in mean_features.blocks()]
+    mean_torch_tensor_values = torch.cat(mean_tensor_values_list, dim=0)
 
-    tensor_values_list = [block.values for block in mean_features.blocks()]
-    torch_tensor_values = torch.cat(tensor_values_list, dim=0)
+    # std features
+    std_features = std_over_samples(tensormap, sample_names=["atom"])
+    std_tensor_values_list = [block.values for block in std_features.blocks()]
+    std_torch_tensor_values = torch.cat(std_tensor_values_list, dim=0)
 
-    return torch_tensor_values
+    # combine
+    combined_features = torch.cat(
+        [mean_torch_tensor_values, std_torch_tensor_values], dim=1
+    )
+
+    return mean_torch_tensor_values, std_torch_tensor_values, combined_features
