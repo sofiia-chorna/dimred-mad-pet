@@ -10,12 +10,11 @@ from src.utils.consts import DEVICE, LFF_OUTPUT_FOLDER, SUBSETS
 def run_predict(split="test"):
     checkpoint_path = os.path.join("saved_models", "checkpoint.pth")
     checkpoint = torch.load(checkpoint_path, map_location=DEVICE)
-    subset_dims = {
-        subset: np.loadtxt(os.path.join(LFF_OUTPUT_FOLDER, subset, "train.dat")).shape[
-            1
-        ]
-        for subset in SUBSETS
-    }
+
+    subset_dims = {}
+    for subset in SUBSETS:
+        train_file = os.path.join(LFF_OUTPUT_FOLDER, subset, "train.dat")
+        subset_dims[subset] = np.loadtxt(train_file).shape[1]
 
     model = MLP(subset_dims=subset_dims)
     model.load_state_dict(checkpoint["model_state_dict"])

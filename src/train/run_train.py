@@ -113,6 +113,7 @@ def run_train(train_features, smap_train_actual):
                 batch_size=batch_size,
                 shuffle=True,
             )
+
             for batch_X, batch_y in train_loader:
                 batch_X, batch_y = batch_X.to(DEVICE), batch_y.to(DEVICE)
                 optimizer.zero_grad()
@@ -137,8 +138,10 @@ def run_train(train_features, smap_train_actual):
                 val_loader = DataLoader(
                     val_datasets[subset_name], batch_size=batch_size, drop_last=True
                 )
+
                 for batch_X, batch_y in val_loader:
                     batch_X, batch_y = batch_X.to(DEVICE), batch_y.to(DEVICE)
+
                     outputs = model(batch_X, subset_name)
                     loss = criterion(outputs, batch_y)
 
