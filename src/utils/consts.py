@@ -18,7 +18,7 @@ MPTRAJ_FOLDER = "data/mptraj"
 MPTRAJ_LFF_OUTPUT_FOLDER = f"{MPTRAJ_FOLDER}_llfs"
 
 
-def get_subsets(path="data/v1.5_cleaned-pbc_llfs"):
+def get_subsets(path="data/v1.5"):
     subsets = [d for d in os.listdir(path) if os.path.isdir(os.path.join(path, d))]
     subsets.sort()
     return subsets
